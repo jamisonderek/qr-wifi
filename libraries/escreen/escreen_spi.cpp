@@ -14,6 +14,18 @@ EScreenSpi::EScreenSpi(uint16_t din, uint16_t clk, uint16_t cs, uint16_t cmd)
   this->pinClock = clk;
   this->pinChipSelect = cs;
   this->pinDataCommand = cmd;
+
+  Serial.print("Data is pin ");
+  Serial.println(this->pinData);
+
+  Serial.print("Clock is pin ");
+  Serial.println(this->pinClock);
+
+  Serial.print("Chip Select is pin ");
+  Serial.println(this->pinChipSelect);
+
+  Serial.print("Data/Command is pin ");
+  Serial.println(this->pinDataCommand);
 }
 
 /**
