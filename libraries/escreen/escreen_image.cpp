@@ -1,12 +1,12 @@
 #include "escreen_image.h"
 
 /**
- * @brief clears the display (all pixes to paperwhite)
+ * @brief clears the display (all pixels to paperwhite)
  */
 void EScreenImage::clear(void)
 {
   uint16_t maxY = this->getSizeY();
-  uint16_t maxX = this->getSizeX();
+  uint16_t maxX = this->getSizeX() >> 3;
 
   for (uint16_t y = 0; y < maxY; y++)
   {
