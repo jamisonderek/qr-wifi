@@ -29,21 +29,12 @@ EScreen::EScreen(uint16_t din, uint16_t clk, uint16_t cs, uint16_t cmd, uint16_t
 {
   this->pinHwReset = rst;
   this->pinBusy = busy;
-
-  this->image = new EScreenImage();
-
   this->spi = new EScreenSpi(din, clk, cs, cmd);
-}
 
-/**
- * @brief Sets the INPUT and OUTPUT mode of the pins
- * 
- */
-void EScreen::setPinMode(void)
-{
-  this->spi->setPinMode();
   pinMode(this->pinHwReset, OUTPUT);
   pinMode(this->pinBusy, INPUT);
+  
+  this->image = new EScreenImage();
 }
 
 /**

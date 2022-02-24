@@ -17,7 +17,6 @@ class EScreenSpi
 public:
   EScreenSpi(uint16_t din, uint16_t clk, uint16_t cs, uint16_t cmd);
 
-  void setPinMode(void);
   void initAllPinsHigh(void);
 
   void send(uint8_t cmd);

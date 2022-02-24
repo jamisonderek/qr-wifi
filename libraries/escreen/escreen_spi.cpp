@@ -26,14 +26,7 @@ EScreenSpi::EScreenSpi(uint16_t din, uint16_t clk, uint16_t cs, uint16_t cmd)
 
   Serial.print("Data/Command is pin ");
   Serial.println(this->pinDataCommand);
-}
 
-/**
- * @brief Sets the pins to OUTPUT mode
- * 
- */
-void EScreenSpi::setPinMode(void)
-{
   pinMode(this->pinData, OUTPUT);
   pinMode(this->pinClock, OUTPUT);
   pinMode(this->pinChipSelect, OUTPUT);

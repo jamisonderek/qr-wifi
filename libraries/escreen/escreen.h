@@ -18,8 +18,6 @@ class EScreen
 public:
   EScreen(uint16_t din = 14, uint16_t clk = 13, uint16_t cs = 15, uint16_t cmd = 27, uint16_t rst = 26, uint16_t busy = 25);
 
-  void setPinMode(void);
-
   void clear(void);
   void setPixel(uint16_t x, uint16_t y, bool isDark);
   bool getPixel(uint16_t x, uint16_t y);

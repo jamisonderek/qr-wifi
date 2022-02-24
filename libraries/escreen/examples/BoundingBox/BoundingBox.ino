@@ -58,7 +58,6 @@ void setup()
   Serial.begin(115200);
 
   pinMode(PIN_BUILTIN_LED, OUTPUT);
-  screen.setPinMode();
 
   blinkSlow();
   fillImage();

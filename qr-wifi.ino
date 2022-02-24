@@ -85,7 +85,6 @@ void setup()
   String password = genPassword();
 
   pinMode(PIN_BUILTIN_LED, OUTPUT);
-  screen->setPinMode();
   Serial.println(ssid.c_str());
   Serial.println(password.c_str());
   fillImage(ssid, password);
