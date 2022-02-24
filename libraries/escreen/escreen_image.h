@@ -10,24 +10,28 @@
 #endif
 #endif
 
-const uint16_t ESCREENSIZEX = 128;
-const uint16_t ESCREENSIZEY = 296;
-
 class EScreenImage
 {
 public:
-  EScreenImage(void) { }
+  EScreenImage(const uint16_t eScreenSizeX, const uint16_t eScreenSizeY);
   
   void clear(void);
   void setPixel(uint16_t x, uint16_t y, bool isDark);
   bool getPixel(uint16_t x, uint16_t y);
   uint8_t getByte(uint16_t xSeg, uint16_t y);
 
-  uint16_t getSizeX(void) { return ESCREENSIZEX; }
-  uint16_t getSizeY(void) { return ESCREENSIZEY; }
+  uint16_t getSizeX(void) { return eScreenSizeX; }
+  uint16_t getSizeY(void) { return eScreenSizeY; }
 
 private:
-  uint8_t image[ESCREENSIZEY][ESCREENSIZEX>>3];
+  uint8_t *image;
+  const uint16_t eScreenSizeX;
+  const uint16_t eScreenSizeY;
+
+  uint16_t getIndex(uint16_t y, uint16_t xSeg)
+  {
+    return xSeg * eScreenSizeY + y;
+  }
 };
 
 #endif

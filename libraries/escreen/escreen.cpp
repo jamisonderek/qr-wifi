@@ -24,8 +24,10 @@
  * @param cmd The pin for selecting command/data; labeled "dc" on screen.
  * @param rst The pin for hardware-reset; labeled "rst" on screen.
  * @param busy The pin for determining if the display is busy; labeled "busy" on screen.
+ * @param eScreenSizeX number of pixels in the X axis
+ * @param eScreenSizeY number of pixels in the Y axis
  */
-EScreen::EScreen(uint16_t din, uint16_t clk, uint16_t cs, uint16_t cmd, uint16_t rst, uint16_t busy)
+EScreen::EScreen(uint16_t din, uint16_t clk, uint16_t cs, uint16_t cmd, uint16_t rst, uint16_t busy, uint16_t eScreenSizeX, uint16_t eScreenSizeY)
 {
   this->pinHwReset = rst;
   this->pinBusy = busy;
@@ -34,7 +36,7 @@ EScreen::EScreen(uint16_t din, uint16_t clk, uint16_t cs, uint16_t cmd, uint16_t
   pinMode(this->pinHwReset, OUTPUT);
   pinMode(this->pinBusy, INPUT);
   
-  this->image = new EScreenImage();
+  this->image = new EScreenImage(eScreenSizeX, eScreenSizeY);
 }
 
 /**
