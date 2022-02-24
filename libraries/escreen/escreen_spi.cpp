@@ -8,13 +8,12 @@
  * @param cs Pin number for chip-select
  * @param cmd Pin number for choosing command/data
  */
-EScreenSpi::EScreenSpi(uint16_t din, uint16_t clk, uint16_t cs, uint16_t cmd) 
+EScreenSpi::EScreenSpi(uint16_t din, uint16_t clk, uint16_t cs, uint16_t cmd) :
+  pinData(din),
+  pinClock(clk),
+  pinChipSelect(cs),
+  pinDataCommand(cmd)
 {
-  this->pinData = din;
-  this->pinClock = clk;
-  this->pinChipSelect = cs;
-  this->pinDataCommand = cmd;
-
   Serial.print("Data is pin ");
   Serial.println(this->pinData);
 
@@ -31,6 +30,19 @@ EScreenSpi::EScreenSpi(uint16_t din, uint16_t clk, uint16_t cs, uint16_t cmd)
   pinMode(this->pinClock, OUTPUT);
   pinMode(this->pinChipSelect, OUTPUT);
   pinMode(this->pinDataCommand, OUTPUT);
+}
+
+/**
+ * @brief Deletes EScreenSpi object, setting all pins to INPUT so they can
+ * be safely connected to VCC or GND.
+ *
+ */
+EScreenSpi::~EScreenSpi()
+{
+  pinMode(this->pinData, INPUT);
+  pinMode(this->pinClock, INPUT);
+  pinMode(this->pinChipSelect, INPUT);
+  pinMode(this->pinDataCommand, INPUT);
 }
 
 /**
@@ -140,7 +152,7 @@ void EScreenSpi::send(uint8_t cmd, uint8_t data1, uint8_t data2, uint8_t data3, 
  * @param cmd The id of the command to send
  * @param image The image to send
  */
-void EScreenSpi::send_image(uint8_t cmd, EScreenImage* image)
+void EScreenSpi::send_image(uint8_t cmd, const EScreenImage* image)
 {
   digitalWrite(pinChipSelect, LOW);
   digitalWrite(pinDataCommand, LOW); // COMMAND

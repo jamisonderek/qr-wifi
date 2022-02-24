@@ -27,16 +27,33 @@
  * @param eScreenSizeX number of pixels in the X axis
  * @param eScreenSizeY number of pixels in the Y axis
  */
-EScreen::EScreen(uint16_t din, uint16_t clk, uint16_t cs, uint16_t cmd, uint16_t rst, uint16_t busy, uint16_t eScreenSizeX, uint16_t eScreenSizeY)
+EScreen::EScreen(uint16_t din, uint16_t clk, uint16_t cs, uint16_t cmd, uint16_t rst, uint16_t busy, uint16_t eScreenSizeX, uint16_t eScreenSizeY) :
+  pinHwReset(rst),
+  pinBusy(busy)
 {
-  this->pinHwReset = rst;
-  this->pinBusy = busy;
   this->spi = new EScreenSpi(din, clk, cs, cmd);
 
   pinMode(this->pinHwReset, OUTPUT);
   pinMode(this->pinBusy, INPUT);
   
   this->image = new EScreenImage(eScreenSizeX, eScreenSizeY);
+}
+
+/**
+ * @brief Deletes EScreen object, setting all pins to INPUT so they can
+ * be safely connected to VCC or GND.
+ *
+ */
+EScreen::~EScreen()
+{
+  delete this->image;
+  this->image = NULL;
+
+  pinMode(this->pinBusy, INPUT);
+  pinMode(this->pinHwReset, INPUT);
+
+  delete this->spi;
+  this->spi = NULL;
 }
 
 /**
@@ -280,7 +297,7 @@ void EScreen::setPixel(uint16_t x, uint16_t y, bool isDark)
  * @return true if pixel is dark
  * @return false is pixel is white
  */
-bool EScreen::getPixel(uint16_t x, uint16_t y)
+bool EScreen::getPixel(uint16_t x, uint16_t y) const
 {
   return this->image->getPixel(x, y);
 }

@@ -13,6 +13,16 @@ EScreenImage::EScreenImage(const uint16_t eScreenSizeX, const uint16_t eScreenSi
 }
 
 /**
+ * @brief Deletes EScreenImage object, freeing image memory.
+ * 
+ */
+EScreenImage::~EScreenImage() 
+{
+  delete [] this->image;
+  this->image = NULL;
+}
+
+/**
  * @brief clears the display (all pixels to paperwhite)
  */
 void EScreenImage::clear(void)
@@ -50,7 +60,7 @@ void EScreenImage::setPixel(uint16_t x, uint16_t y, bool isDark)
  * @return true if pixel is dark
  * @return false is pixel is white
  */
-bool EScreenImage::getPixel(uint16_t x, uint16_t y)
+bool EScreenImage::getPixel(uint16_t x, uint16_t y) const
 {
   return (image[getIndex(y, x >> 3)] & (1 << (x & 7))) != 0;
 }
@@ -62,7 +72,7 @@ bool EScreenImage::getPixel(uint16_t x, uint16_t y)
  * @param y the y coordinate
  * @return uint8_t 8 bits of display data
  */
-uint8_t EScreenImage::getByte(uint16_t xSeg, uint16_t y)
+uint8_t EScreenImage::getByte(uint16_t xSeg, uint16_t y) const
 {
   return image[getIndex(y, xSeg)];
 }

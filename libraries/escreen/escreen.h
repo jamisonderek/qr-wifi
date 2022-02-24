@@ -17,12 +17,13 @@ class EScreen
 {
 public:
   EScreen(uint16_t din = 14, uint16_t clk = 13, uint16_t cs = 15, uint16_t cmd = 27, uint16_t rst = 26, uint16_t busy = 25, uint16_t eScreenSizeX = 128, uint16_t eScreenSizeY = 296);
+  ~EScreen();
 
   void clear(void);
   void setPixel(uint16_t x, uint16_t y, bool isDark);
-  bool getPixel(uint16_t x, uint16_t y);
-  uint16_t getSizeX(void) { return image->getSizeX(); }
-  uint16_t getSizeY(void) { return image->getSizeY(); }
+  bool getPixel(uint16_t x, uint16_t y) const;
+  uint16_t getSizeX(void) const { return image->getSizeX(); }
+  uint16_t getSizeY(void) const { return image->getSizeY(); }
   void drawDisplay(void);
 
 private:
@@ -42,8 +43,8 @@ private:
   void step12_waitWhileBusy(void);
   void step13_deepSleep(void);
 
-  uint16_t pinHwReset;
-  uint16_t pinBusy;
+  const uint16_t pinHwReset;
+  const uint16_t pinBusy;
 
   EScreenSpi *spi;
   EScreenImage *image;
