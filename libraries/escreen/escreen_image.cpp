@@ -1,20 +1,26 @@
 #include "escreen_image.h"
 
 /**
+ * @brief Construct a new EScreenImage object
+ * 
+ * @param eScreenSizeX number of pixels in the X axis
+ * @param eScreenSizeY number of pixels in the Y axis
+ */
+EScreenImage::EScreenImage(const uint16_t eScreenSizeX, const uint16_t eScreenSizeY) :
+  eScreenSizeX(eScreenSizeX), eScreenSizeY(eScreenSizeY)
+{
+  this->image = new uint8_t[eScreenSizeX * eScreenSizeY >> 3];
+}
+
+/**
  * @brief clears the display (all pixels to paperwhite)
  */
 void EScreenImage::clear(void)
 {
   uint16_t maxY = this->getSizeY();
-  uint16_t maxX = this->getSizeX() >> 3;
+  uint16_t maxXBytes = this->getSizeX() >> 3;
 
-  for (uint16_t y = 0; y < maxY; y++)
-  {
-    for (uint16_t x = 0; x < maxX; x++)
-    {
-      image[y][x] = 0;
-    }
-  }
+  memset(image, 0, maxY * maxXBytes);
 }
 
 /**
@@ -28,11 +34,11 @@ void EScreenImage::setPixel(uint16_t x, uint16_t y, bool isDark)
 {
   if (isDark)
   {
-    image[y][x >> 3] |= 1 << (x & 7);
+    image[getIndex(y, x >> 3)] |= 1 << (x & 7);
   }
   else
   {
-    image[y][x >> 3] &= ~(1 << (x & 7));
+    image[getIndex(y, x >> 3)] &= ~(1 << (x & 7));
   }
 }
 
@@ -46,7 +52,7 @@ void EScreenImage::setPixel(uint16_t x, uint16_t y, bool isDark)
  */
 bool EScreenImage::getPixel(uint16_t x, uint16_t y)
 {
-  return (image[y][x >> 3] & (1 << (x & 7))) != 0;
+  return (image[getIndex(y, x >> 3)] & (1 << (x & 7))) != 0;
 }
 
 /**
@@ -58,5 +64,5 @@ bool EScreenImage::getPixel(uint16_t x, uint16_t y)
  */
 uint8_t EScreenImage::getByte(uint16_t xSeg, uint16_t y)
 {
-  return image[y][xSeg];
+  return image[getIndex(y, xSeg)];
 }
