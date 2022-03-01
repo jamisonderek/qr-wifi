@@ -16,14 +16,14 @@
 class EScreen
 {
 public:
-  EScreen(uint16_t din = 14, uint16_t clk = 13, uint16_t cs = 15, uint16_t cmd = 27, uint16_t rst = 26, uint16_t busy = 25, uint16_t eScreenSizeX = 128, uint16_t eScreenSizeY = 296);
+  EScreen(uint16_t din = 14, uint16_t clk = 13, uint16_t cs = 15, uint16_t cmd = 27, uint16_t rst = 26, uint16_t busy = 25, uint16_t eScreenSizeW = 296, uint16_t eScreenSizeH = 128);
   ~EScreen();
 
   void clear(void);
   void setPixel(uint16_t x, uint16_t y, bool isDark);
   bool getPixel(uint16_t x, uint16_t y) const;
-  uint16_t getSizeX(void) const { return image->getSizeX(); }
-  uint16_t getSizeY(void) const { return image->getSizeY(); }
+  uint16_t getPixelWidth(void) const;
+  uint16_t getPixelHeight(void) const;
   void drawDisplay(void);
 
 private:

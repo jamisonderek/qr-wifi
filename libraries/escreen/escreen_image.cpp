@@ -3,13 +3,18 @@
 /**
  * @brief Construct a new EScreenImage object
  * 
- * @param eScreenSizeX number of pixels in the X axis
- * @param eScreenSizeY number of pixels in the Y axis
+ * @param eScreenSizeW The width of the display (number of pixels in X axis)
+ * @param eScreenSizeH The height of the display (number of pixels in Y axis)
+ * @param offsetY The number of offset bytes in Y axis before rendering on display 
+ * @param virtualY The total number of bytes in the Y axis, including offscreen data
  */
-EScreenImage::EScreenImage(const uint16_t eScreenSizeX, const uint16_t eScreenSizeY) :
-  eScreenSizeX(eScreenSizeX), eScreenSizeY(eScreenSizeY)
+EScreenImage::EScreenImage(uint16_t eScreenSizeW, uint16_t eScreenSizeH, uint16_t offsetY, uint16_t virtualY) :
+  eScreenSizeW(eScreenSizeW),
+  eScreenSizeH(eScreenSizeH),
+  offsetY(offsetY),
+  virtualY(virtualY)
 {
-  this->image = new uint8_t[eScreenSizeX * eScreenSizeY >> 3];
+  this->image = new uint8_t[eScreenSizeW * eScreenSizeH >> 3];
 }
 
 /**
@@ -27,52 +32,84 @@ EScreenImage::~EScreenImage()
  */
 void EScreenImage::clear(void)
 {
-  uint16_t maxY = this->getSizeY();
-  uint16_t maxXBytes = this->getSizeX() >> 3;
-
-  memset(image, 0, maxY * maxXBytes);
+  memset(image, 0, (eScreenSizeH >> 3) * eScreenSizeW);
 }
 
 /**
  * @brief Sets a pixel to dark or white
  * 
- * @param x the x coordinate
- * @param y the y coordinate
+ * @param x the x coordinate (amount right)
+ * @param y the y coordinate (amount down)
  * @param isDark use true for dark, false for white.
  */
 void EScreenImage::setPixel(uint16_t x, uint16_t y, bool isDark)
 {
+  uint8_t pixelMask = 1 << (y & 7);
   if (isDark)
   {
-    image[getIndex(y, x >> 3)] |= 1 << (x & 7);
+    image[getIndex(x, y)] |= pixelMask;
   }
   else
   {
-    image[getIndex(y, x >> 3)] &= ~(1 << (x & 7));
+    image[getIndex(x, y)] &= ~pixelMask;
   }
 }
 
 /**
  * @brief Gets the state of the pixel
  * 
- * @param x the x coordinate
- * @param y the y coordinate
+ * @param x the x coordinate (amount right)
+ * @param y the y coordinate (amount down)
  * @return true if pixel is dark
  * @return false is pixel is white
  */
 bool EScreenImage::getPixel(uint16_t x, uint16_t y) const
 {
-  return (image[getIndex(y, x >> 3)] & (1 << (x & 7))) != 0;
+  uint8_t pixelMask = 1 << (y & 7);
+  return (image[getIndex(x, y)] & pixelMask) == pixelMask;
 }
 
 /**
- * @brief Gets a byte worth of display data 
+ * @brief Gets the width of the display (number of pixels in X axis)
  * 
- * @param xSeg the x segment (8 bits)
- * @param y the y coordinate
- * @return uint8_t 8 bits of display data
+ * @return The width of the display (pixels in X axis)
  */
-uint8_t EScreenImage::getByte(uint16_t xSeg, uint16_t y) const
+uint16_t EScreenImage::getScreenWidth(void) const
 {
-  return image[getIndex(y, xSeg)];
+  return eScreenSizeW;
+}
+
+/**
+ * @brief Gets the height of the display (number of pixels in Y axis)
+ * 
+ * @return The height of the display (pixels in Y axis)
+ */
+uint16_t EScreenImage::getScreenHeight(void) const
+{
+  return eScreenSizeH;
+}
+
+/**
+ * @brief Sends an image in Y,X order including padding.
+ */
+void EScreenImage::sendImage(WriteData* writer) const
+{
+  uint16_t maxY = (eScreenSizeH >> 3) + offsetY;
+
+  uint8_t* imageData = image;
+  for (uint16_t x = 0; x < eScreenSizeW; x++)
+  {
+    for (uint16_t y = 0; y < virtualY; y++)
+    {
+      if (y < offsetY || y >= maxY)
+      {
+        // We can write any byte value since it is off-screen.
+        writer->write(0);
+      }
+      else
+      {
+        writer->write(*imageData++);
+      }
+    }
+  }
 }

@@ -29,24 +29,24 @@ void fillImage()
 {
   screen.clear();
 
-  int maxX = screen.getSizeX();
-  int maxY = screen.getSizeY();
-  for (int y = 0; y < maxY; y++)
+  int maxX = screen.getPixelWidth();
+  int maxY = screen.getPixelHeight();
+  for (int x = 0; x < maxX; x++)
   {
-    for (int x = 0; x < maxX; x++)
+    for (int y = 0; y < maxY; y++)
     {
       boolean value = false;
       
       // Bounding box
-      if (x == 0) value = true;
-      if (x == maxX-1) value = true;
       if (y == 0) value = true;
       if (y == maxY-1) value = true;
+      if (x == 0) value = true;
+      if (x == maxX-1) value = true;
 
       // Plus symbol.
-      if ((x >= 60) && (x < 65) && (y > 150) && (y < 155)) value = true;
-      if ((x >= 64) && (x < 70) && (y > 140) && (y < 165)) value = true;
-      if ((x >= 70) && (x < 75) && (y > 150) && (y < 155)) value = true;
+      if ((y >= 60) && (y < 65) && (x > 150) && (x < 155)) value = true;
+      if ((y >= 64) && (y < 70) && (x > 140) && (x < 165)) value = true;
+      if ((y >= 70) && (y < 75) && (x > 150) && (x < 155)) value = true;
 
       screen.setPixel(x, y, value);
     }

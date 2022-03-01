@@ -24,10 +24,10 @@
  * @param cmd The pin for selecting command/data; labeled "dc" on screen.
  * @param rst The pin for hardware-reset; labeled "rst" on screen.
  * @param busy The pin for determining if the display is busy; labeled "busy" on screen.
- * @param eScreenSizeX number of pixels in the X axis
- * @param eScreenSizeY number of pixels in the Y axis
+ * @param eScreenSizeW The width of the screen (number of pixels in the X axis)
+ * @param eScreenSizeH The height of the screen (number of pixels in the Y axis)
  */
-EScreen::EScreen(uint16_t din, uint16_t clk, uint16_t cs, uint16_t cmd, uint16_t rst, uint16_t busy, uint16_t eScreenSizeX, uint16_t eScreenSizeY) :
+EScreen::EScreen(uint16_t din, uint16_t clk, uint16_t cs, uint16_t cmd, uint16_t rst, uint16_t busy, uint16_t eScreenSizeW, uint16_t eScreenSizeH) :
   pinHwReset(rst),
   pinBusy(busy)
 {
@@ -36,7 +36,7 @@ EScreen::EScreen(uint16_t din, uint16_t clk, uint16_t cs, uint16_t cmd, uint16_t
   pinMode(this->pinHwReset, OUTPUT);
   pinMode(this->pinBusy, INPUT);
   
-  this->image = new EScreenImage(eScreenSizeX, eScreenSizeY);
+  this->image = new EScreenImage(eScreenSizeW, eScreenSizeH);
 }
 
 /**
@@ -280,8 +280,8 @@ void EScreen::clear(void)
 /**
  * @brief Sets a pixel to dark or paperwhite
  * 
- * @param x the x coordinate
- * @param y the y coordinate
+ * @param x the x coordinate (amount right)
+ * @param y the y coordinate (amount down)
  * @param isDark use true for dark, false for paperwhite.
  */
 void EScreen::setPixel(uint16_t x, uint16_t y, bool isDark)
@@ -292,12 +292,28 @@ void EScreen::setPixel(uint16_t x, uint16_t y, bool isDark)
 /**
  * @brief Gets the state of the pixel
  * 
- * @param x the x coordinate
- * @param y the y coordinate
+ * @param x the x coordinate (amount right)
+ * @param y the y coordinate (amount down)
  * @return true if pixel is dark
  * @return false is pixel is white
  */
 bool EScreen::getPixel(uint16_t x, uint16_t y) const
 {
   return this->image->getPixel(x, y);
+}
+
+/**
+ * @brief Gets the width of the display (number of pixels in X axis)
+ */
+uint16_t EScreen::getPixelWidth(void) const 
+{
+  return image->getScreenWidth();
+}
+
+/**
+ * @brief Gets the height of the display (number of pixels in Y axis).
+ */
+uint16_t EScreen::getPixelHeight(void) const
+{
+  return image->getScreenHeight();
 }

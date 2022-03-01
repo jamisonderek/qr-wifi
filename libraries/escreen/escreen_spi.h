@@ -12,7 +12,7 @@
 
 #include "escreen_image.h"
 
-class EScreenSpi
+class EScreenSpi : WriteData
 {
 public:
   EScreenSpi(uint16_t din, uint16_t clk, uint16_t cs, uint16_t cmd);
@@ -26,6 +26,8 @@ public:
   void send(uint8_t cmd, uint8_t data1, uint8_t data2, uint8_t data3);
   void send(uint8_t cmd, uint8_t data1, uint8_t data2, uint8_t data3, uint8_t data4);
   void send_image(uint8_t cmd, const EScreenImage* image);
+
+  void write(uint8_t d);
 
 private:
   void spi_write(uint8_t d);

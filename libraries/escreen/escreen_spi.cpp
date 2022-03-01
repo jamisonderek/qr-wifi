@@ -147,6 +147,16 @@ void EScreenSpi::send(uint8_t cmd, uint8_t data1, uint8_t data2, uint8_t data3, 
 }
 
 /**
+ * @brief Writes a byte of image data from the screen to the SPI bus.
+ * 
+ * @param data The data to write
+ */
+void EScreenSpi::write(uint8_t data)
+{
+  spi_write_backwards(data);
+}
+
+/**
  * @brief Sends an SPI command and the data from an image
  * 
  * @param cmd The id of the command to send
@@ -159,25 +169,7 @@ void EScreenSpi::send_image(uint8_t cmd, const EScreenImage* image)
   spi_write(cmd);
   digitalWrite(pinDataCommand, HIGH); // DATA
 
-  uint16_t offsetX = 1;
-  uint16_t virtualX = 22;
-  uint16_t maxY = image->getSizeY();
-  uint16_t maxX = image->getSizeX() + offsetX;
-
-  for (uint16_t y = 0; y < maxY; y++)
-  {
-    for (uint16_t x = 0; x < virtualX; x++)
-    {
-      if (x < offsetX || x >= maxX)
-      {
-        spi_write_backwards(0);
-      }
-      else
-      {
-        spi_write_backwards(image->getByte(x - offsetX, y));
-      }
-    }
-  }
+  image->sendImage(this);
 
   digitalWrite(pinChipSelect, HIGH);
 }

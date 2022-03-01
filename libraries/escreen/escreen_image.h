@@ -10,26 +10,36 @@
 #endif
 #endif
 
+class WriteData
+{
+public:
+  virtual void write(uint8_t data) = 0;
+};
+
 class EScreenImage
 {
 public:
-  EScreenImage(const uint16_t eScreenSizeX, const uint16_t eScreenSizeY);
+  EScreenImage(uint16_t eScreenSizeH, uint16_t eScreenSizeW, uint16_t offsetY = 1, uint16_t virtualY = 22);
   ~EScreenImage();
 
   void clear(void);
   void setPixel(uint16_t x, uint16_t y, bool isDark);
   bool getPixel(uint16_t x, uint16_t y) const;
-  uint8_t getByte(uint16_t xSeg, uint16_t y) const;
 
-  uint16_t getSizeX(void) const { return eScreenSizeX; }
-  uint16_t getSizeY(void) const { return eScreenSizeY; }
+  uint16_t getScreenWidth(void) const;
+  uint16_t getScreenHeight(void) const;
+
+  void sendImage(WriteData* writer) const;
 
 private:
   uint8_t *image;
-  const uint16_t eScreenSizeX;
-  const uint16_t eScreenSizeY;
+  const uint16_t eScreenSizeH;
+  const uint16_t eScreenSizeW;
+  const uint16_t offsetY;
+  const uint16_t virtualY;
 
-  uint16_t getIndex(uint16_t y, uint16_t xSeg) const { return xSeg * eScreenSizeY + y; }
+  uint16_t getIndex(uint16_t x, uint16_t y) const { return x * ( eScreenSizeH >> 3) + (y >> 3); }
 };
 
 #endif
+
